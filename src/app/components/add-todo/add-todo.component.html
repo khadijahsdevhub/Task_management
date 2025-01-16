@@ -1,0 +1,11 @@
+<section>
+    <form (ngSubmit)="addTask(task)" >
+        <div class="d-flex">
+            <input type="text" placeholder="Add a task" name="task" [(ngModel)]="task" />
+            <input type="submit" value="Add"  />
+        </div>
+        
+    </form>
+
+    <app-todolists [tasklists]="tasks" ></app-todolists>
+</section>

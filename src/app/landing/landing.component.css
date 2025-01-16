@@ -1,0 +1,24 @@
+.landing-page{
+    min-height: 100vh;
+}
+.hero{
+    background: linear-gradient(90deg, rgba(156,138,155,1) 0%, rgba(215,201,249,1) 41%, rgba(146,159,183,1) 100%);
+    width: 100%;   
+}
+.hero-image{
+    object-fit: contain;
+}
+.start-btn{
+    background: var(--primary);
+    padding: 8px 16px;
+    font-size: 24px;
+    font-weight: bold;
+    color:#fff;
+    width: 250px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+.start-btn:hover{
+    background: var(--secondary);
+}
