@@ -1,11 +1,55 @@
-<section>
-    <form (ngSubmit)="addTask(task)" >
-        <div class="d-flex">
-            <input type="text" placeholder="Add a task" name="task" [(ngModel)]="task" />
-            <input type="submit" value="Add"  />
-        </div>
+<section class="container-fluid add-task-modal-wrapper   overlay">
+    <div class="add-task-modal" >
+      <div class="modal-header">
+        <h5 class="modal-title align-self-center  ">{{ isEditMode ? 'Edit Task' : 'Add a Task' }} </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="closeModal()" ></button>
+      </div>
+      <form (ngSubmit)="onSubmit()" [formGroup]="addTaskForm" >
+      <div class="modal-body p-3">
+          <div class="row">
+            <label for="taskTitle"> <span class="text-danger mr-2" >*</span> Task Title</label>
+            <input id="taskTitle" class="form-control" type="text" formControlName="title" placeholder="Add a task" name="title" required />
+          </div>
+          <div class="row">
+            <label for="taskDesc">  Task Description</label>
+            <textarea id="taskDesc" class="form-control" formControlName="description" placeholder="Add a task description" name="desc" > </textarea>
+          </div>
+          <div class="row justify-content-between">
+            <div class="col-6">
+               <label for="taskCategory">Category</label>
+            <select id="taskCategory" class="form-select select-category" formControlName="category" name="category" >
+              <option value="" > Select a category </option>
+              <option *ngFor="let category of categories" [value]="category.name">{{ category.name }}</option>
+            </select>
+            </div>
+            <div class="col-6 ">
+              <label for="taskCategory">Priority</label>
+           <select id="taskPriority" class="form-select select-priority " formControlName="priority" name="priority" >
+            <option  value="" > Select a piority </option>
+             <option class="" *ngFor="let priority of priorities" [value]="priority.name">{{ priority.name }}</option>
+           </select>
+           </div>
+           
+          </div>
+          <div class="row justify-content-between">
+            <div class="form-group col-6">
+              <label for="taskDate">Date</label>
+              <input id="taskDate" class="form-control"  type="date" formControlName="dueDate" name="dueDate"  />
+            </div>
+            <div class="form-group col-6">
+              <label for="taskTime">Time</label>
+              <input id="taskTime" class="form-control"  type="time" formControlName="dueTime" name="dueTime"  />
+            </div>
+          </div>
         
-    </form>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class=" btn close-btn"  (click)="closeModal()" >Close</button>
+      <input type="submit" class="btn  add-btn" [value]="isEditMode ? 'Save Changes' : 'Add Task'"  />
+    </div>
+      </form>
+    </div>
+   </section>
 
-    <app-todolists [tasklists]="tasks" ></app-todolists>
-</section>
+    
+   

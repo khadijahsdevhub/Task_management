@@ -1,5 +1,71 @@
 <section>
-    @for (task of tasklists; track task ) {
-        <div> {{task}} </div>
-    }
+   
+    <div class="d-flex flex-column gap-3 ">
+        @for (list of taskLists; track list.id) {
+              <div class="row task" [ngClass]="list.category" >
+                <div class="p-4" >
+                <div class="d-flex justify-content-between align-items-center">
+              <h6 class="task-title"  > {{list.title}} </h6>
+              <div class="toggle-view-details" >
+                @if (list.viewDetails) {
+                  <i class="fa-solid fa-chevron-up cursor"  (click)="toggleTaskDetails(list.id)" ></i>
+                } @else {
+                  <i class="fa-solid fa-chevron-down cursor"  (click)="toggleTaskDetails(list.id)" ></i>
+                }
+              </div>
+              
+          </div>
+          
+       <div class="task-labels pt-3 d-flex gap-3">
+       
+        <div class="category-card label-card" [ngClass]="list.category" >
+              <i class="fa-solid " [ngClass]="checkCategory(list.category)"></i>
+              <span class="ml-2"> {{list.category}} </span>
+        </div>
+        <div class="time-card label-card ">
+          <i class="fa-solid fa-calendar "></i>
+          <span class="ml-2"> {{list.dueDate | date:'mediumDate'}} </span>
+        </div>
+        @if (list.dueTime) {
+           <div class="time-card label-card ">
+          <i class="fa-solid fa-clock "></i>
+          <span class="ml-2"> {{list.dueTime }} </span>
+        </div>
+        }
+        @if (list.priority != "Normal") {
+           <div class="d-flex align-items-center ">
+            <span class="mx-1"> <i [class]="getPriorityIcon(list.priority)"></i> </span>
+            <span class="label">{{ list.priority }} </span>
+        </div>
+        }
+        <div class="d-flex align-items-center">
+          <input 
+            type="checkbox" 
+            [checked]="list.isCompleted" 
+            (change)="toggleTaskCompletion(list.id)"
+            
+          />
+          <span class="mx-1">{{ list.isCompleted ? 'Completed' : 'Mark as complete' }}</span>
+        </div>
+        
+       </div>
+          </div>
+
+          @if (list.viewDetails) {
+            <div class="p-3 mt-2 task-details ">
+              <p>{{list.description}}</p>
+              <div class="d-flex justify-content-end align-items-center ">
+                <div class="mx-3 cursor cntrl-btn" (click)="taskEdit(list)">
+                   <i class="fa-solid fa-pencil"  > </i> Edit </div>
+                <div class="text-danger cntrl-btn cursor mx-3" (click)="taskDelete(list.id)" > <i class="fa-solid fa-trash "> </i> Delete </div>
+              </div>
+      
+             </div>
+          }
+      
+      </div>    
+        }
+
+
+      </div>
 </section>

@@ -1,0 +1,126 @@
+.category-card.Work{
+    background-color: rgba(74, 74, 250, 0.368);
+    color: rgb(74, 74, 250);
+  }
+  
+  .category-card.Personal{
+    background-color: #fbbe2444;
+    color: #fbbf24;
+  }
+  
+  .category-card.Health{
+    background-color: #dc26264d;
+    color: #dc2626;
+  }
+  
+  .category-card.Study{
+    background-color: #1d4fd84d;
+    color: #1d4ed8;
+  }
+  
+  .category-card.Shopping{
+    background-color: #16a34a50;
+    color: #16a34a;
+  }
+  
+  .category-card.Events{
+    color: #84cc16;
+    background-color: #83cc165b;
+  }
+  
+  .category-card.Finance{
+    background-color: #d9770657;
+    color: #d97706;
+  }
+  
+  .category-card.Travel{
+    background-color: #38bff854;
+    color: #38bdf8;
+  }
+  
+  .category-card.Entertainment{
+    background-color: #db277848;
+    color: #db2777;
+  }
+  
+  .category-card.Miscellaneous, .time-card{
+    background-color: #ccc;
+    color: #333;
+  }
+  
+  .label{
+    font-size: 12px !important;
+  }
+  
+.label-card {
+    display: flex;
+    font-size: 12px !important;
+    align-items: center;
+    justify-content: space-around;
+    padding: 4px 8px !important ;
+    border-radius: 20px;
+  }
+  
+.time-card{
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    padding: 4px 10px;
+    border-radius: 20px;
+  }
+  .task-title::first-letter{
+    text-transform: uppercase;
+  }
+  .toggle-view-details{
+    border-radius: 50%;
+    padding: 3px 4px;
+    }
+  .toggle-view-details:hover{
+    background-color: rgba(128, 128, 128, 0.486);
+  }
+  
+  
+.task{
+    /* border-left:var(--primary) 8px solid; */
+    background-color: #fff;
+    border-radius: 10px;
+    cursor: pointer;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px ;
+  
+  }
+  .task.Personal{
+    border-left:#fbbf24 8px solid !important;
+  }
+  .task.Health{
+    border-left:#dc2626 8px solid !important;
+  }
+  .task.Work{
+    border-left: rgb(74, 74, 250) 8px solid !important;
+  }
+  .task.Study{
+    border-left: #1d4ed8  8px solid !important;
+  }
+  .task.Shopping{
+    border-left:#16a34a 8px solid !important;
+  }
+  .task.Event{
+    border-left:#84cc16 8px solid !important;
+  }
+  .task.Finance{
+    border-left: #d97706 8px solid !important;
+  }
+  .task.Travel{
+    border-left:#38bdf8  8px solid !important;
+  }
+  .task.Entertainment{
+    border-left: #db2777 8px solid !important;
+  }
+  .task.Miscellaneous{
+    border-left:#333  8px solid !important;
+  }
+  
+  .task-details{
+    background-color: #e7e3e998;
+  
+  }
+  

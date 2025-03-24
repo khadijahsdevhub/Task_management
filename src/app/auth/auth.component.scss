@@ -1,0 +1,28 @@
+.auth-wrapper {
+display: flex;
+justify-content: space-between;
+min-width: 400px;
+width: 80%;
+min-height: 100vh;
+margin: 0px auto;
+background-color: rgb(245, 244, 245);
+box-shadow: 3px 4px 10px gray;
+border-radius: 10px;
+transition: all 0.3s ease-in-out;
+
+.auth-banner{
+    display: flex;
+    background: linear-gradient(90deg, rgba(156,138,155,1) 0%, rgba(215,201,249,1) 41%, rgba(146,159,183,1) 100%);
+    flex-direction: column;
+    justify-content: center;
+    gap: 1rem;
+    align-items: center;
+    width: 50%;
+    padding: 1rem;
+    min-width: 300px;
+    img{
+        width: 300px;
+        object-fit: contain;
+    }
+}
+}

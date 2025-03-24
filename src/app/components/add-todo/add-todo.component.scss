@@ -1,0 +1,71 @@
+.add-task-modal-wrapper  {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 10;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.overlay{
+    background: rgba(0, 0, 0, 0.6);
+  
+}
+.add-task-modal{
+    background-color: white;
+    padding: 8px 16px;
+    width: 60%;
+    min-width: 500px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    z-index: 99;
+
+}
+.modal-body{
+    display: flex;
+    flex-direction: column;
+    gap:8px
+}
+
+
+.modal-footer{
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+label{
+    font-weight: bold;
+}
+
+.close-btn{
+    background-color: var(--white);
+    color: var(--primary);
+    font-weight:bold;
+    padding: 8px 16px;
+    border: var(--primary) solid .6px ;
+    outline:none;  
+    margin: 0px 16px; 
+    transition: all .3s;
+}
+
+.close-btn:hover, .add-btn:hover{
+    transform: scale(1.05);
+    transition: all .3s;
+}
+
+.add-btn{
+    background-color: var(--primary);
+    color: var(--white);
+    font-weight:bold;
+    padding: 8px 16px;
+    border: var(--primary) solid .6px ;
+    outline:none;   
+    margin: 0px 16px; 
+    transition: all .3s;
+}
+

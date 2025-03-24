@@ -1,0 +1,42 @@
+
+  @if (errorMessage) {
+    <div class="error-message p-3 m-0 text-danger">
+      <span class="d-flex justify-content-end " (click)="closeErrorMessage()" > <button class="btn "> <i class="fa-solid fa-xmark fa-xl " ></i> </button> </span>
+      <p>
+        {{errorMessage}}
+      </p>
+
+</div>
+  }
+  <div class="row login-form ">
+<form class="" [formGroup]="loginForm" (ngSubmit)="login()">
+  <h4 class="text-center text-primary " >Sign in</h4>
+  <div>
+    <label for="email" class="form-label">Email</label>
+    <input type="email" class="form-control" formControlName="email" placeholder="Please enter your email" />
+    <span  class="text-danger my-2 tiny-text" *ngIf="email?.invalid && email?.touched">
+      <i class="fa-solid fa-circle-exclamation mx-2"></i> Enter a valid email
+    </span>
+  </div>
+  <div >
+    <label for="password" class="form-label">Password</label>
+    <input type="password" class="form-control" formControlName="password" placeholder="Please enter your password" />
+    <span class="text-danger tiny-text" *ngIf="password?.invalid && password?.touched">
+      <i class="fa-solid fa-circle-exclamation mx-2"></i>Enter correct password
+    </span>
+     </div>
+    
+    <button type="submit" class="button" [disabled]="loginForm.invalid">Sign in</button>
+
+    <p class="my-3 text-center">Don't have an account?
+      <a class="primary-link" href="/auth/register" > <span class="text-primary mx-2" >Register</span> </a> 
+    </p>
+  </form>
+ 
+</div>
+
+
+
+
+
+  

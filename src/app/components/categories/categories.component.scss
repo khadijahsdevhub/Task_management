@@ -1,0 +1,84 @@
+.categories{
+    overflow-x: auto; 
+    -ms-overflow-style: none; 
+    scrollbar-width: none; 
+    scrollbar-width: 0px;
+    margin: 1.5rem auto;
+  }
+  
+  .categories::-webkit-scrollbar {
+    display: none; 
+  }
+  
+
+  .category-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    padding: 4px 10px;
+    border-radius: 20px;
+  }
+
+  .category-card.active{
+    box-shadow: 3px 4px 15px;
+    transform: scale(1.15);
+  }
+  
+  .category-label{
+    font-size: 14px;
+  }
+  
+  .category-card.All{
+    background-color: var(--secondary);
+    color: var(--primary);
+  }
+  
+  .category-card.Work{
+    background-color: rgba(74, 74, 250, 0.368);
+    color: rgb(74, 74, 250);
+  }
+  
+  .category-card.Personal{
+    background-color: #fbbe2444;
+    color: #fbbf24;
+  }
+  
+  .category-card.Health{
+    background-color: #dc26264d;
+    color: #dc2626;
+  }
+  
+  .category-card.Study{
+    background-color: #1d4fd84d;
+    color: #1d4ed8;
+  }
+  
+  .category-card.Shopping{
+    background-color: #16a34a50;
+    color: #16a34a;
+  }
+  
+  .category-card.Events{
+    color: #84cc16;
+    background-color: #83cc165b;
+  }
+  
+  .category-card.Finance{
+    background-color: #d9770657;
+    color: #d97706;
+  }
+  
+  .category-card.Travel{
+    background-color: #38bff854;
+    color: #38bdf8;
+  }
+  
+  .category-card.Entertainment{
+    background-color: #db277848;
+    color: #db2777;
+  }
+  
+  .category-card.Miscellaneous, .time-card{
+    background-color: #ccc;
+    color: #333;
+  }

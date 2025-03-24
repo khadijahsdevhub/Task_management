@@ -1,0 +1,21 @@
+.login-form{
+    height: 100%;
+    padding: 0px 1rem;
+}
+form{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    gap: 1rem;
+   
+}
+button{
+    color: white;
+}
+label{
+    font-weight: bolder;
+}
+.error-message{
+    background-color: rgba(247, 144, 144, 0.582);
+
+}

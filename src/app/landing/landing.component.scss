@@ -1,6 +1,4 @@
-.landing-page{
-    min-height: 100vh;
-}
+
 .hero{
     background: linear-gradient(90deg, rgba(156,138,155,1) 0%, rgba(215,201,249,1) 41%, rgba(146,159,183,1) 100%);
     width: 100%;   
@@ -8,8 +6,19 @@
 .hero-image{
     object-fit: contain;
 }
+
+.app-details{
+    background-color: #fff;
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    width: 100%;
+    text-align: center;
+    padding: 2rem;
+}
 .start-btn{
-    background: var(--primary);
+    background: var(--primary) !important;
     padding: 8px 16px;
     font-size: 24px;
     font-weight: bold;
@@ -18,7 +27,4 @@
     display: flex;
     justify-content: space-around;
     align-items: center;
-}
-.start-btn:hover{
-    background: var(--secondary);
 }

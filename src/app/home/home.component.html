@@ -15,15 +15,13 @@
                 <h5>Monday, 12th Jan 2025</h5>
             </div>
         </div>
-      
-
+    
         <div class="progress col-12 col-lg-8 col-md-6">
             <div class="mr-3">
                 <h6 >Your today's task is almost done!</h6>
-            <button class="mt-3 view-btn px-4 py-2 ">View task</button>
+            <button class="mt-3 custom-btn " (click)="goToTasks()" >View all tasks</button>
             </div>
-            
-            
+                 
             <div class="progress-circle">
                 <div class="circle">
                   <div class="mask full">
@@ -42,62 +40,65 @@
                     {{ progress }}%
                   </div>
                 </div>
-              </div>
-              
-              
+              </div>   
         </div>
     </div>
 
 </section>
-
-
     <section class="container my-4" >
-      <div class="d-flex justify-content-between align-items-center ">
-        <h4>Today's Tasks</h4>
+      <div class="row justify-content-between align-items-center ">
+        <h4 class="col-lg-4 col-md-12 col-sm-12 " >Today's Tasks</h4>
         
-      <div class="searchGroup">
+      <div class="searchGroup col-lg-4 col-md-6 col-sm-6 ">
           <i class="fa-solid fa-magnifying-glass"></i>
           <input type="text" placeholder="Search" />
       </div>
 
-        <div class="filters">
-        <button class="filter-btn" > <i class="fa-solid fa-filter mr-2"></i> Filter</button>
-        <button class="calendar-btn " > <i class="fa-solid fa-calendar mr-2"></i> View calendar</button>
+        <div class="filters col-lg-4 col-md-6 col-sm-6">
+        <button class="filter-btn custom-btn-rev mx-3" > <i class="fa-solid fa-filter mr-2"></i> Filter</button>
+        <button class="calendar-btn custom-btn-rev mx-3 " > <i class="fa-solid fa-calendar mr-2"></i> View calendar</button>
         </div>
         
       </div>
      
-      <div class=" categories d-flex gap-3">
-        @for (category of categories; track category.name) {
-          <div class="category-card" [ngClass]="category.name" >
-            <i class={{category.icon}}></i>
-                <h6 class="category-label m-2"> {{category.name}} </h6>
-          </div>
-        }
-          
-  
-      </div>
+      <app-categories (filterTasks)="filterTasks($event)" [selectedCategory]="selectedCategory" >
+      </app-categories>
 
       <div>
-        <div class="row  task">
-          <div class="d-flex justify-content-between align-items-center  ">
-            <h6>  Take a shower</h6>
-            <i class="fa-solid fa-chevron-down "></i>
-          </div>
-          
-       <div class="d-flex gap-3">
-        <div class="category-card Personal" [ngClass]="" >
-              <i class="fa-solid fa-user "></i>
-              <h6 class="category-label m-2"> Personal </h6>
-        </div>
-       </div>
-      </div>
-      </div>
+        @if(todayTaskList.length < 1 ) {
+            <div class="d-flex justify-content-center align-items-center flex-column gap-3 p-3 ">
+                <img src="/assets/images/no-results.png" />
+                 @if (selectedCategory == "All") {
+                  <h2>No Task Found</h2>
+                 } @else {
+                  <h2>No {{selectedCategory}} Task Found</h2>
+                 }
+            </div>
+        }
+        @else {
+           <app-todolists [taskLists]="todayTaskList"  (editTask)="openEditTask($event)" (deleteTask)="deleteTask($event)" ></app-todolists>
+        }
+ 
+  </div>
+  <div>
+    @if (completedList.length > 0) {
+      <h4>Completed Task</h4>
+      <app-todolists [taskLists]="completedList"  (editTask)="openEditTask($event)" (deleteTask)="deleteTask($event)" ></app-todolists>
+    }
+  </div>
       
 
     </section>
 
-
+<button class="add-task cursor" (click)="openModal()">
+  <span>
+    <i class="fa-solid fa-plus"></i>
+  </span>
+  
+</button>
 
   
 </section>
+@if (isModalOpen) {
+  <app-add-todo (closemodal)="closeModal()" [isEditMode]="editMode"  [taskToEdit]="selectedTask" ></app-add-todo>
+}

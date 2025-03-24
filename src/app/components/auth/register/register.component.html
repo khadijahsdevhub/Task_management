@@ -1,0 +1,63 @@
+
+
+@if (errorMessage) {
+  <div class="error-message p-3 m-0 text-danger">
+    <span class="d-flex justify-content-end " (click)="closeErrorMessage()" > <button class="btn "> <i class="fa-solid fa-xmark fa-xl " ></i> </button> </span>
+    <p>
+      {{errorMessage}}
+    </p>
+
+</div>
+}
+  <div class="row register-form ">
+<form class="" [formGroup]="registerForm" (ngSubmit)="register()">
+  <h4 class="text-center text-primary " >Register</h4>
+  <div>
+    <label for="username" class="form-label">Username</label>
+    <input type="text" class="form-control" formControlName="username" placeholder="Please enter your username" />
+    <span class="text-danger my-2 tiny-text" *ngIf="username?.invalid && username?.touched"> 
+      <i class="fa-solid fa-circle-exclamation mx-2"></i> Username is required (min 3 characters)
+    </span>
+  </div>
+  <div>
+    <label for="email" class="form-label">Email</label>
+    <input type="email" class="form-control" formControlName="email" placeholder="Please enter your email" />
+    <span  class="text-danger my-2 tiny-text" *ngIf="email?.invalid && email?.touched">
+      <i class="fa-solid fa-circle-exclamation mx-2"></i> Enter a valid email
+    </span>
+  </div>
+  <div class="row">
+     <div class="col">
+    <label for="password" class="form-label">Password</label>
+    <input type="password" class="form-control" formControlName="password" placeholder="Please enter your password" />
+    <span class="text-danger tiny-text" *ngIf="password?.invalid && password?.touched">
+      <i class="fa-solid fa-circle-exclamation mx-2"></i>Password must be at least 6 characters
+    </span>
+     </div>
+    <div class="col">
+    <label for="confirmPassword" class="form-label">Confirm Password</label>
+    <input type="password" class="form-control" formControlName="confirmPassword" placeholder="Please confirm your password" />
+    <span class="text-danger tiny-text"  *ngIf="registerForm.hasError('mismatch') && confirmPassword?.touched">
+      <i class="fa-solid fa-circle-exclamation mx-2"></i> Passwords do not match
+    </span>
+  </div>
+  </div>
+ 
+ 
+
+
+  <button type="submit"  class="button" [disabled]="registerForm.invalid">Register</button>
+
+    <p class="my-3 text-center">Already have an account? 
+      <a class="primary-link" href="/auth/login" ><span class="text-primary mx-2" >Sign in</span> </a>
+      </p>
+  </form>
+ 
+</div>
+
+
+
+
+
+  
+

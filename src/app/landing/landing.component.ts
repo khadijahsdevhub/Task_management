@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
 @Component({
@@ -6,7 +6,7 @@ import { Router } from '@angular/router';
   standalone: true,
   imports: [],
   templateUrl: './landing.component.html',
-  styleUrl: './landing.component.css'
+  styleUrl: './landing.component.scss'
 })
 export class LandingComponent implements OnInit {
 heroImg =''
@@ -18,7 +18,11 @@ ngOnInit(): void {
 constructor(private router:Router){}
 
 start(){
-this.router.navigate(['/todolist']);
+this.router.navigate(['/auth/login']);
 }
 
+@HostListener('document:keyup.enter', ['$event'])
+  handleKeyUp(event: KeyboardEvent) {
+    this.start();
+  }
 }
