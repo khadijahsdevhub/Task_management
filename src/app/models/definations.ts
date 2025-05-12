@@ -11,7 +11,16 @@ export interface Task {
     createdAt: Date;
     completedAt: Date | null;
 }
+
 export interface Categories{
     name: string;
     icon: string;
 }
+
+
+export interface User {
+    uid: string;
+    email: string;
+    name: string;
+    createdAt: Date;
+  }

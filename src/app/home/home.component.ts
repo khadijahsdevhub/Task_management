@@ -1,12 +1,16 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { AddTodoComponent } from "../components/add-todo/add-todo.component";
-import { TasksService } from '../services/task/tasks.service';
+import { TaskService } from '../services/task/tasks.service';
 import { Task } from '../models/definations';
 import { CategoriesComponent } from "../components/categories/categories.component";
 import { TodolistsComponent } from '../components/todolists/todolists.component';
 import { Router } from '@angular/router';
 import { AuthService } from '../services/auth/auth.service';
+import { UserService } from '../services/user/user.service';
+import { log } from 'console';
+import { Observable, of } from 'rxjs';
+
 
 @Component({
   selector: 'app-home',
@@ -15,11 +19,13 @@ import { AuthService } from '../services/auth/auth.service';
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })
+
 export class HomeComponent implements OnInit {
-  
+  username ='';
   progress: number = 100; // Set progress value here
   isModalOpen: boolean = false;
   editMode: boolean = false;
+  tasks$: Observable<Task[]> = of([]);
   taskList: Task[]=[];
   todayTaskList: Task[]=[];
   completedList: Task[]=[];
@@ -27,40 +33,37 @@ export class HomeComponent implements OnInit {
   filteredTasks: Task[] = [];
   selectedCategory: string | null = "All";
 
-constructor(private tasksService: TasksService, private router:Router, private authService:AuthService){}
+constructor(private taskService: TaskService, private router:Router, private userService: UserService, private authService:AuthService ) {}
 
-ngOnInit(): void {
- this.tasksService.tasks$.subscribe(updatedTasks => {
-    this.taskList = updatedTasks;
-  });
-  this.todayTaskList = this.getTodaysTasks().active;
-  this.completedList = this.getTodaysTasks().completed;
+async ngOnInit() {
+  this.userService.initUserFromLocalStorage();
+  const currentUser = this.userService.getUser();
+
+  if (currentUser) {
+    this.username = currentUser.name;
+    if (currentUser.uid){
+      this.taskList = await this.taskService.getTasks(currentUser.uid);
+    }
+    // setTimeout(() => {
+    //   this.taskService.getTasks(currentUser.uid).subscribe(res => {
+    //     this.taskList = res;
+    //   });
+    // }, 5000); 
+    console.log('Welcome,', currentUser.name); 
+    console.log( currentUser);
+    console.log(this.tasks$)
+
+  }
 }
-
-getTodaysTasks(): { completed: Task[]; active: Task[] } {
-  const todaysTasks = this.taskList
-  // const today = new Date();
-  // const todaysTasks = this.taskList.filter(task => {
-  //   const taskDate = task.dueDate;
-  //   return taskDate?.getTime() === today.getTime(); // Check if task is for today
-  // });
-
-  return {
-    completed: this.tasksService.getCompletedTasks(todaysTasks),
-    active: this.tasksService.getActiveTasks(todaysTasks),
-  };
-}
-
 
 
 
 goToTasks(){
   this.router.navigate(['./tasklists'])
-
 }
 
 filterTasks(category: string) {
-  this.filteredTasks = this.tasksService.filterTasksByCategory(category);
+  this.filteredTasks = this.taskService.filterTasksByCategory(category);
   this.todayTaskList = this.filteredTasks;
   this.selectedCategory = category;
   console.log(this.filteredTasks);
@@ -89,8 +92,8 @@ filterTasks(category: string) {
     this.selectedTask = { ...task }; 
   }
 
-  deleteTask(taskId:string){
-    this.tasksService.deleteTask(taskId); 
+  deleteTask(taskId:string, uniqueId:string){
+    this.taskService.deleteTask(taskId, uniqueId ) ; 
   }
 
   async logout() {

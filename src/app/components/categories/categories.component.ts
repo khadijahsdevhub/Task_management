@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Output, Input } from '@angular/core';
-import { Task } from '../../models/definations';
-import { TasksService } from '../../services/task/tasks.service';
+
+
 
 @Component({
   selector: 'app-categories',

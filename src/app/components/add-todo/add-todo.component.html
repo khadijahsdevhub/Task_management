@@ -2,7 +2,7 @@
     <div class="add-task-modal" >
       <div class="modal-header">
         <h5 class="modal-title align-self-center  ">{{ isEditMode ? 'Edit Task' : 'Add a Task' }} </h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="closeModal()" ></button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="closemodal.emit()" ></button>
       </div>
       <form (ngSubmit)="onSubmit()" [formGroup]="addTaskForm" >
       <div class="modal-body p-3">
@@ -44,7 +44,7 @@
         
     </div>
     <div class="modal-footer">
-      <button type="button" class=" btn close-btn"  (click)="closeModal()" >Close</button>
+      <button type="button" class=" btn close-btn"  (click)="closemodal.emit()" >Close</button>
       <input type="submit" class="btn  add-btn" [value]="isEditMode ? 'Save Changes' : 'Add Task'"  />
     </div>
       </form>

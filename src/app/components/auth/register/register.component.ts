@@ -47,8 +47,8 @@ export class RegisterComponent {
       return;
     }
 
-    const { email, password } = this.registerForm.value;
-    const result = await this.authService.register(email,password);
+    const { email, password, username } = this.registerForm.value;
+    const result = await this.authService.register(email, password, username);
     if (typeof result === 'string') {
       this.errorMessage = result; // Show error message
     }

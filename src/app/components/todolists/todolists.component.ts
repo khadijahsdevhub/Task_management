@@ -2,13 +2,14 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { Categories, Task } from '../../models/definations';
 import { CommonModule } from '@angular/common';
 import { categories } from '../../models/data';
-import { TasksService } from '../../services/task/tasks.service';
+import { TaskService } from '../../services/task/tasks.service';
+import { TimestampToDatePipe } from '../../pipes/timestamp-to-date.pipe';
 
 
 @Component({
   selector: 'app-todolists',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TimestampToDatePipe],
   templateUrl: './todolists.component.html',
   styleUrl: './todolists.component.scss'
 })
@@ -16,12 +17,12 @@ export class TodolistsComponent {
   showTaskDetails = false;
   categories: Categories[]= categories;
 
- @Input() taskLists:Task[] = [] ;
+ @Input() taskLists:Task[]  = [] ;
  @Output() editTask = new EventEmitter <Task> ();
  @Output() deleteTask = new EventEmitter <string> ();
  //@Output() completeTask = new EventEmitter();
 
-constructor(private tasksService:TasksService){}
+constructor(private taskService:TaskService){}
 
 toggleTaskDetails(taskId:string){
   this.taskLists.forEach((t)=>{
@@ -62,7 +63,7 @@ toggleTaskDetails(taskId:string){
 
   toggleTaskCompletion(taskId: string): void {
     console.log(taskId)
-      this.tasksService.toggleTaskAsComplete(taskId);
+      this.taskService.toggleTaskAsComplete(taskId);
   }
   
 

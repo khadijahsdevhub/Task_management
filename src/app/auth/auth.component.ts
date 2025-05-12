@@ -11,6 +11,7 @@ import { CommonModule } from '@angular/common';
   styleUrl: './auth.component.scss'
 })
 export class AuthComponent {
+
   isRegisterPage: boolean = false;
 
   constructor(private router: Router) {

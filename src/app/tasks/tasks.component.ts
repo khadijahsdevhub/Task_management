@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CategoriesComponent } from "../components/categories/categories.component";
-import { TasksService } from '../services/task/tasks.service';
+import { TaskService } from '../services/task/tasks.service';
 import { Task } from '../models/definations';
 import { TodolistsComponent } from "../components/todolists/todolists.component";
 import { AddTodoComponent } from "../components/add-todo/add-todo.component";
@@ -20,16 +20,16 @@ export class TasksComponent implements OnInit {
   selectedTask: Task | null = null;
   filteredTasks: Task[] = [];
 
-  constructor(private tasksService: TasksService, private router:Router){}
+  constructor(private taskService: TaskService, private router:Router){}
 
   ngOnInit(): void {
-    this.tasksService.tasks$.subscribe(updatedTasks => {
-      this.filteredTasks = updatedTasks;
-    });
+    // this.taskService.tasks$.subscribe(updatedTasks => {
+    //   this.filteredTasks = updatedTasks;
+    // });
     
   }
   filterTasks(category: string) {
-    this.filteredTasks = this.tasksService.filterTasksByCategory(category);
+    this.filteredTasks = this.taskService.filterTasksByCategory(category);
     this.selectedCategory = category;
     console.log(this.filteredTasks);
     console.log(this.selectedCategory);
@@ -54,7 +54,7 @@ export class TasksComponent implements OnInit {
   }
 
   deleteTask(taskId:string){
-    this.tasksService.deleteTask(taskId); 
+    //this.taskService.deleteTask(taskId); 
   }
 
   goToHome(){

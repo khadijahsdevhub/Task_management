@@ -24,12 +24,12 @@
         </div>
         <div class="time-card label-card ">
           <i class="fa-solid fa-calendar "></i>
-          <span class="ml-2"> {{list.dueDate | date:'mediumDate'}} </span>
+          <span class="ml-2"> {{list.dueDate | timestampToDate | date:'fullDate'}} </span>
         </div>
         @if (list.dueTime) {
            <div class="time-card label-card ">
           <i class="fa-solid fa-clock "></i>
-          <span class="ml-2"> {{list.dueTime }} </span>
+          <span class="ml-2"> {{list.dueTime | timestampToDate | date:'shortTime'}} </span>
         </div>
         }
         @if (list.priority != "Normal") {
