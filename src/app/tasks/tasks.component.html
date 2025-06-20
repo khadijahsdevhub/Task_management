@@ -1,43 +1,67 @@
-<section class="container mx-auto " >
-    <h1 class="p-3" >  <i class="fa fa-solid fa-arrow-left mx-3 cursor" (click)="goToHome()" ></i>
-      Task Management App</h1>
-    <app-categories (filterTasks)="filterTasks($event)" [selectedCategory]="selectedCategory" >
-    </app-categories>
+<section class="container mx-auto">
+  <h1 class="p-3">
+    <i class="fa fa-solid fa-arrow-left mx-3 cursor" (click)="goToHome()"></i>
+    Task Management App
+  </h1>
+  <app-categories
+    (filterTasks)="filterTasksByCategory($event)"
+    [selectedCategory]="selectedCategory"
+  >
+  </app-categories>
 
-    <!-- <div class="row justify-content-end align-items-center ">
-        <div class="filters gap-3 ">
-        <button class="filter-btn custom-btn-rev mx-3" > <i class="fa-solid fa-filter mr-2"></i> Filter</button>
-        <button class="calendar-btn custom-btn-rev mx-3 " > <i class="fa-solid fa-calendar mr-2"></i> View calendar</button>
-        </div>      
-      </div> -->
-<div>
-    @if(filteredTasks.length < 1) {
-        <div class="d-flex justify-content-center align-items-center flex-column gap-3 p-3 ">
-            <img src="/assets/images/no-results.png" />
-            @if (selectedCategory == "All") {
-              <h2>No Task Found</h2>
-             } @else {
-              <h2>No {{selectedCategory}} Task Found</h2>
-             }
-        </div>
-    }
-    @else{
-         <app-todolists [taskLists]="filteredTasks" (editTask)="openEditTask($event)" (deleteTask)="deleteTask($event)" ></app-todolists>
-    }
-   
-</div>
+  <div class="filters">
+    <select
+      id="taskPriority"
+      class="filter cursor mx-3"
+      (ngModelChange)="filterTasksByPriority($event)"
+      [(ngModel)]="selectedPriority"
+      name="priority"
+    >
+      <option value="All" selected>Filter</option>
+      <option
+        class=""
+        *ngFor="let priority of priorities"
+        [value]="priority.name"
+      >
+        {{ priority.name }}
+      </option>
+    </select>
 
-<button class="add-task cursor" (click)="openModal()" >
+    <button class="calendar-btn custom-btn-rev mx-3">
+      <i class="fa-solid fa-calendar mr-2"></i> View calendar
+    </button>
+  </div>
+  <div>
+    @if(taskList.length < 1) {
+    <div
+      class="d-flex justify-content-center align-items-center flex-column gap-3 p-3"
+    >
+      <img src="/assets/images/no-results.png" />
+      @if (selectedCategory == "All") {
+      <h2>No Task Found</h2>
+      } @else {
+      <h2>No {{ selectedCategory }} Task Found</h2>
+      }
+    </div>
+    } @else{
+    <app-todolists
+      [taskLists]="taskList"
+      (editTask)="openEditTask($event)"
+      (deleteTask)="deleteTask($event)"
+    ></app-todolists>
+    }
+  </div>
+
+  <button class="add-task cursor" (click)="openModal()">
     <span>
       <i class="fa-solid fa-plus"></i>
     </span>
-    
   </button>
-  
-
 </section>
 @if (isModalOpen) {
-    <app-add-todo (closemodal)="closeModal()" [isEditMode]="editMode"  [taskToEdit]="selectedTask" ></app-add-todo>
-  }
-
-
+<app-add-todo
+  (closemodal)="closeModal()"
+  [isEditMode]="editMode"
+  [taskToEdit]="selectedTask"
+></app-add-todo>
+}

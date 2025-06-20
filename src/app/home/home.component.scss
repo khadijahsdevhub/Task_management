@@ -1,18 +1,18 @@
-.hi{
-    font-weight: lighter;
-    font-size: 18px;
+.hi {
+  font-weight: lighter;
+  font-size: 18px;
 }
-.progress{
-    background-color: var(--primary);
-    width: 300px;
-    height: 150px;
-    padding: 1rem;
-    margin: 8px 16px;
-    border-radius: 20px;
-    color: var(--white);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+.progress {
+  background-color: var(--primary);
+  width: 300px;
+  height: 150px;
+  padding: 1rem;
+  margin: 8px 16px;
+  border-radius: 20px;
+  color: var(--white);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 /* Container */
 .progress-circle {
@@ -85,9 +85,22 @@
   border: none;
   outline: none;
 }
-.view-btn:hover{
+.view-btn:hover {
   background-color: var(--secondary);
   color: var(--primary);
 }
 
+.filter {
+  padding: 0.5rem 1rem;
+  background-color: var(--primary);
+  color: white;
+  border: none;
+  outline: none;
+  font-weight: bolder;
+}
 
+.filter option,
+.filter:hover {
+  background-color: white;
+  color: var(--primary);
+}

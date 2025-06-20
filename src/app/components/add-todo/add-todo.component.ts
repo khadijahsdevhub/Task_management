@@ -34,7 +34,6 @@ export class AddTodoComponent {
   priorities = [
     { name: 'Normal' },
     { name: 'High' },
-    { name: 'Medium' },
     { name: 'Low' }
   ];
 
@@ -91,7 +90,7 @@ export class AddTodoComponent {
         ...this.addTaskForm.value,
         updated_at: new Date().toISOString()
       };
-      await this.taskService.updateTask(updatedTask.id, updatedTask);
+      await this.taskService.updateTask(user.uid, updatedTask.id, updatedTask);
       console.log('Task updated');
     } else {
       const newTaskData = this.addTaskForm.value;
