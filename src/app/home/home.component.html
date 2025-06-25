@@ -1,103 +1,154 @@
 <section class="container-fluid">
+  <section class="wrapper p-3 mx-auto">
+    <div class="row justify-content-between gap-3 align-items-center">
+      <div class="col-12 col-lg-4 col-md-6 d-flex flex-column">
+        <div class="profile d-flex align-items-center gap-3">
+          <img
+            src="../../assets/images/user1.jpeg"
+            alt="user-image"
+            class="profile-img"
+          />
+          <div>
+            <h6 class="">
+              Hi, <span class="fw-bold"> {{ username }} </span>
+            </h6>
+          </div>
+        </div>
+        <div class="row my-3">
+          <h5>Monday, 12th Jan 2025</h5>
+        </div>
+      </div>
 
-<section class=" wrapper p-3 mx-auto">
-    <div class="row justify-content-between gap-3 align-items-center ">
-        <div class="col-12 col-lg-4 col-md-6 d-flex flex-column">
-            <div class="profile  d-flex align-items-center gap-3 ">
-                <img src="../../assets/images/user1.jpeg" alt="user-image" class="profile-img" />
-                <div>
-                    <h6 class="">Hi, <span class="fw-bold" > {{username}} </span>  </h6>
-                </div>
-                
-            </div>
-            <div class="row my-3">
-                <h5>Monday, 12th Jan 2025</h5>
-            </div>
+      <div class="progress col-12 col-lg-8 col-md-6">
+        <div class="mr-3">
+          <h6>Your today's task is almost done!</h6>
+          <button class="mt-3 custom-btn" (click)="goToTasks()">
+            View all tasks
+          </button>
         </div>
-    
-        <div class="progress col-12 col-lg-8 col-md-6">
-            <div class="mr-3">
-                <h6 >Your today's task is almost done!</h6>
-            <button class="mt-3 custom-btn " (click)="goToTasks()" >View all tasks</button>
+        <circle-progress
+          [percent]="progress"
+          [radius]="60"
+          [outerStrokeWidth]="10"
+          [innerStrokeWidth]="3"
+          [outerStrokeColor]="'#fff'"
+          [innerStrokeColor]="'#d7c9f9'"
+          [animation]="true"
+          [animationDuration]="300"
+          [showTitle]="true"
+          [titleColor]="'#fff'"
+          [showUnits]="true"
+          [unitsColor]="'#fff'"
+          [showSubtitle]="true"
+          [subtitleColor]="'#fff'"
+          [showBackground]="false"
+        >
+        </circle-progress>
+
+        <!-- <div class="progress-circle">
+          <div class="circle">
+            <div class="mask">
+              <div
+                class="fill"
+                [style.transform]="
+                  'rotate(' +
+                  (progress <= 50 ? getRightRotation() : 180) +
+                  'deg)'
+                "
+              ></div>
             </div>
-                 
-            <div class="progress-circle">
-                <div class="circle">
-                  <div class="mask full">
-                    <div
-                      class="fill"
-                      [style.transform]="'rotate(' + (progress > 50 ? 180 : getRotationValue()) + 'deg)'"
-                    ></div>
-                  </div>
-                  <div class="mask half">
-                    <div
-                      class="fill"
-                      [style.transform]="'rotate(' + getRotationValue() + 'deg)'"
-                    ></div>
-                  </div>
-                  <div class="inside-circle">
-                    {{ progress }}%
-                  </div>
-                </div>
-              </div>   
-        </div>
+            <div class="mask half">
+              <div
+                class="fill"
+                [style.transform]="
+                  'rotate(' + (progress > 50 ? getLeftRotation() : 0) + 'deg)'
+                "
+              ></div>
+            </div>
+            <div class="inside-circle">{{ progress }}%</div>
+          </div>
+        </div> -->
+      </div>
+    </div>
+  </section>
+  <section class="container my-4">
+    <div class="d-flex justify-content-between align-items-center">
+      <h4 class="">Today's Tasks</h4>
+
+      <div class="searchGroup">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input
+          type="text"
+          [(ngModel)]="searchTerm"
+          placeholder="Search tasks..."
+          (ngModelChange)="searchTasks($event)"
+        />
+      </div>
+
+      <div class="filters">
+        <select
+          id="taskPriority"
+          class="filter cursor mx-3"
+          (ngModelChange)="filterTasksByPriority($event)"
+          [(ngModel)]="selectedPriority"
+          name="priority"
+        >
+          <option value="All" selected>Filter</option>
+          <option
+            class=""
+            *ngFor="let priority of priorities"
+            [value]="priority.name"
+          >
+            {{ priority.name }}
+          </option>
+        </select>
+
+        <button class="calendar-btn custom-btn-rev mx-3">
+          <i class="fa-solid fa-calendar mr-2"></i> View calendar
+        </button>
+      </div>
     </div>
 
-</section>
-    <section class="container my-4" >
-      <div class="row justify-content-between align-items-center ">
-        <h4 class="col-lg-4 col-md-12 col-sm-12 " >Today's Tasks</h4>
-        
-      <div class="searchGroup col-lg-4 col-md-6 col-sm-6 ">
-          <i class="fa-solid fa-magnifying-glass"></i>
-          <input type="text" placeholder="Search" />
-      </div>
+    <app-categories
+      (filterTasks)="filterTasksCategory($event)"
+      [selectedCategory]="selectedCategory"
+    >
+    </app-categories>
 
-        <div class="filters col-lg-4 col-md-6 col-sm-6">
-        <button class="filter-btn custom-btn-rev mx-3" > <i class="fa-solid fa-filter mr-2"></i> Filter</button>
-        <button class="calendar-btn custom-btn-rev mx-3 " > <i class="fa-solid fa-calendar mr-2"></i> View calendar</button>
-        </div>
-        
-      </div>
-     
-      <app-categories (filterTasks)="filterTasks($event)" [selectedCategory]="selectedCategory" >
-      </app-categories>
-
-      <div>
-        @if(taskList.length < 1 ) {
-            <div class="d-flex justify-content-center align-items-center flex-column gap-3 p-3 ">
-                <img src="/assets/images/no-results.png" />
-                 @if (selectedCategory == "All") {
-                  <h2>No Task Found</h2>
-                 } @else {
-                  <h2>No {{selectedCategory}} Task Found</h2>
-                 }
-            </div>
+    <div>
+      @if(taskList.length < 1 ) {
+      <div
+        class="d-flex justify-content-center align-items-center flex-column gap-3 p-3"
+      >
+        <img src="/assets/images/no-results.png" />
+        @if (selectedCategory == "All") {
+        <h2>No Task Found</h2>
+        } @else {
+        <h2>No {{ selectedCategory }} Task Found</h2>
         }
-        @else {
-           <app-todolists [taskLists]="taskList" (editTask)="openEditTask($event)"  ></app-todolists>
-        }
- 
-  </div>
-  <div>
-    @if (completedList.length > 0) {
-      <h4>Completed Task</h4>
-      <app-todolists [taskLists]="completedList"  (editTask)="openEditTask($event)" ></app-todolists>
-    }
-  </div>
-      
+      </div>
+      } @else {
+      <app-todolists
+        [taskLists]="filteredTaskList"
+        [hasCompletedTask]="hasCompletedTasks()"
+        (editTask)="openEditTask($event)"
+        (deleteTask)="deleteTask($event)"
+        (toggleComplete)="onToggleComplete($event)"
+      ></app-todolists>
+      }
+    </div>
+  </section>
 
-    </section>
-
-<button class="add-task cursor" (click)="openModal()">
-  <span>
-    <i class="fa-solid fa-plus"></i>
-  </span>
-  
-</button>
-
-  
+  <button class="add-task cursor" (click)="openModal()">
+    <span>
+      <i class="fa-solid fa-plus"></i>
+    </span>
+  </button>
 </section>
 @if (isModalOpen) {
-  <app-add-todo (closemodal)="closeModal()" [isEditMode]="editMode"  [taskToEdit]="selectedTask" ></app-add-todo>
+<app-add-todo
+  (closemodal)="closeModal()"
+  [isEditMode]="editMode"
+  [taskToEdit]="selectedTask"
+></app-add-todo>
 }

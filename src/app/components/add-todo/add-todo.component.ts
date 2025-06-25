@@ -3,7 +3,7 @@ import {
   EventEmitter,
   Input,
   Output,
-  SimpleChanges
+  SimpleChanges,
 } from '@angular/core';
 import { Task } from '../../models/definations';
 import {
@@ -11,7 +11,7 @@ import {
   ReactiveFormsModule,
   FormGroup,
   FormBuilder,
-  Validators
+  Validators,
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { TaskService } from '../../services/task/tasks.service';
@@ -22,7 +22,7 @@ import { UserService } from '../../services/user/user.service';
   standalone: true,
   imports: [FormsModule, CommonModule, ReactiveFormsModule],
   templateUrl: './add-todo.component.html',
-  styleUrl: './add-todo.component.scss'
+  styleUrl: './add-todo.component.scss',
 })
 export class AddTodoComponent {
   @Input() taskToEdit: Task | null = null;
@@ -31,12 +31,7 @@ export class AddTodoComponent {
 
   addTaskForm: FormGroup;
 
-  priorities = [
-    { name: 'Normal' },
-    { name: 'High' },
-    { name: 'Medium' },
-    { name: 'Low' }
-  ];
+  priorities = [{ name: 'Normal' }, { name: 'High' }, { name: 'Low' }];
 
   categories = [
     { name: 'Work', icon: 'fas fa-briefcase' },
@@ -48,7 +43,7 @@ export class AddTodoComponent {
     { name: 'Finance', icon: 'fas fa-dollar-sign' },
     { name: 'Travel', icon: 'fas fa-plane' },
     { name: 'Entertainment', icon: 'fas fa-film' },
-    { name: 'Miscellaneous', icon: 'fas fa-ellipsis-h' }
+    { name: 'Miscellaneous', icon: 'fas fa-ellipsis-h' },
   ];
 
   constructor(
@@ -62,10 +57,9 @@ export class AddTodoComponent {
       priority: ['Normal'],
       category: ['Personal'],
       dueDate: [new Date()],
-      dueTime: [null]
+      dueTime: [null],
     });
   }
-
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['taskToEdit'] && this.taskToEdit) {
@@ -89,14 +83,13 @@ export class AddTodoComponent {
       const updatedTask: Task = {
         ...this.taskToEdit,
         ...this.addTaskForm.value,
-        updated_at: new Date().toISOString()
+        updated_at: new Date().toISOString(),
       };
-      await this.taskService.updateTask(updatedTask.id, updatedTask);
+      await this.taskService.updateTask(user.uid, updatedTask.id, updatedTask);
       console.log('Task updated');
     } else {
       const newTaskData = this.addTaskForm.value;
       await this.taskService.addTask(user.uid, newTaskData);
-      console.log('Task added');
     }
 
     this.addTaskForm.reset();
