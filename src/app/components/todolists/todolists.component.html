@@ -3,8 +3,8 @@
     @for (list of taskLists; track list.id) {
     <div
       class="row task"
-      *ngIf="list.status != 'completed'"
       [ngClass]="list.category"
+      *ngIf="list.status === 'pending' || list.status === 'expired'"
     >
       <div class="p-4">
         <div class="d-flex justify-content-between align-items-center">
@@ -27,90 +27,7 @@
         <div class="task-labels pt-3 d-flex gap-3">
           <div class="category-card label-card" [ngClass]="list.category">
             <i class="fa-solid" [ngClass]="checkCategory(list.category)"></i>
-            <span class="ml-2"> {{ list.category }} </span>
-          </div>
-          <div class="time-card label-card">
-            <i class="fa-solid fa-calendar"></i>
-            <span class="ml-2">
-              {{ list.dueDate | timestampToDate | date : "fullDate" }}
-            </span>
-          </div>
-          @if (list.dueTime) {
-          <div class="time-card label-card">
-            <i class="fa-solid fa-clock"></i>
-            <span class="ml-2">
-              {{ list.dueTime | timestampToDate | date : "shortTime" }}
-            </span>
-          </div>
-          }
-          <div class="d-flex align-items-center">
-            <span class="mx-1">
-              <i [class]="getPriorityIcon(list.priority)"></i>
-            </span>
-            <span class="label">{{ list.priority }} </span>
-          </div>
-
-          <div class="d-flex align-items-center">
-            <input type="checkbox" (change)="onToggleComplete(list)" />
-            <!-- <span class="mx-1">{{
-              list.status == "completed" ? "Completed" : "Mark as complete"
-            }}</span> -->
-          </div>
-        </div>
-      </div>
-
-      @if (list.viewDetails) {
-      <div class="p-3 mt-2 task-details">
-        <p>{{ list.description }}</p>
-        <div class="d-flex justify-content-end align-items-center">
-          <div class="mx-3 cursor cntrl-btn" (click)="taskEdit(list)">
-            <i class="fa-solid fa-pencil"> </i> Edit
-          </div>
-          <div
-            class="text-danger cntrl-btn cursor mx-3"
-            (click)="taskDelete(list.id)"
-          >
-            <i class="fa-solid fa-trash"> </i> Delete
-          </div>
-        </div>
-      </div>
-      }
-    </div>
-    }
-  </div>
-</section>
-
-<section class="py-4">
-  <h4>Completed Tasks</h4>
-  <div class="d-flex flex-column gap-3">
-    @for (list of taskLists; track list.id) {
-    <div
-      class="row task completed-task"
-      *ngIf="list.status === 'completed'"
-      [ngClass]="list.category"
-    >
-      <div class="p-4">
-        <div class="d-flex justify-content-between align-items-center">
-          <h6 class="task-title">{{ list.title }}</h6>
-          <div class="toggle-view-details">
-            @if (list.viewDetails) {
-            <i
-              class="fa-solid fa-chevron-up cursor"
-              (click)="toggleTaskDetails(list.id)"
-            ></i>
-            } @else {
-            <i
-              class="fa-solid fa-chevron-down cursor"
-              (click)="toggleTaskDetails(list.id)"
-            ></i>
-            }
-          </div>
-        </div>
-
-        <div class="task-labels pt-3 d-flex gap-3">
-          <div class="category-card label-card" [ngClass]="list.category">
-            <i class="fa-solid" [ngClass]="checkCategory(list.category)"></i>
-            <span class="ml-2"> {{ list.category }} </span>
+            <span class="ml-2"> {{ list.category | sentenceCase }} </span>
           </div>
           <div class="time-card label-card">
             <i class="fa-solid fa-calendar"></i>
@@ -139,9 +56,92 @@
               [checked]=""
               (change)="onToggleComplete(list)"
             />
-            <span class="mx-1">{{
-              list.status === "completed" ? "Completed" : "Mark as complete"
-            }}</span>
+            <span class="mx-1">{{ "Mark as complete" }}</span>
+          </div>
+        </div>
+      </div>
+
+      @if (list.viewDetails) {
+      <div class="p-3 mt-2 task-details">
+        <p>{{ list.description }}</p>
+        <div class="d-flex justify-content-end align-items-center">
+          <div class="mx-3 cursor cntrl-btn" (click)="taskEdit(list)">
+            <i class="fa-solid fa-pencil"> </i> Edit
+          </div>
+          <div
+            class="text-danger cntrl-btn cursor mx-3"
+            (click)="taskDelete(list.id)"
+          >
+            <i class="fa-solid fa-trash"> </i> Delete
+          </div>
+        </div>
+      </div>
+      }
+    </div>
+    }
+  </div>
+</section>
+
+<section *ngIf="hasCompletedTask">
+  <h3 class="py-3">Completed Tasks</h3>
+  <div class="d-flex flex-column gap-3">
+    @for (list of taskLists; track list.id) {
+    <div
+      class="row task"
+      [ngClass]="list.category"
+      *ngIf="list.status === 'completed'"
+    >
+      <div class="p-4">
+        <div class="d-flex justify-content-between align-items-center">
+          <h6 class="task-title">{{ list.title }}</h6>
+          <div class="toggle-view-details">
+            @if (list.viewDetails) {
+            <i
+              class="fa-solid fa-chevron-up cursor"
+              (click)="toggleTaskDetails(list.id)"
+            ></i>
+            } @else {
+            <i
+              class="fa-solid fa-chevron-down cursor"
+              (click)="toggleTaskDetails(list.id)"
+            ></i>
+            }
+          </div>
+        </div>
+
+        <div class="task-labels pt-3 d-flex gap-3">
+          <div class="category-card label-card" [ngClass]="list.category">
+            <i class="fa-solid" [ngClass]="checkCategory(list.category)"></i>
+            <span class="ml-2"> {{ list.category | sentenceCase }} </span>
+          </div>
+          <div class="time-card label-card">
+            <i class="fa-solid fa-calendar"></i>
+            <span class="ml-2">
+              {{ list.dueDate | timestampToDate | date : "fullDate" }}
+            </span>
+          </div>
+          @if (list.dueTime) {
+          <div class="time-card label-card">
+            <i class="fa-solid fa-clock"></i>
+            <span class="ml-2">
+              {{ list.dueTime | timestampToDate | date : "shortTime" }}
+            </span>
+          </div>
+          }
+          <div class="d-flex align-items-center">
+            <span class="mx-1">
+              <i [class]="getPriorityIcon(list.priority)"></i>
+            </span>
+            <span class="label">{{ list.priority }} </span>
+          </div>
+
+          <div class="d-flex align-items-center">
+            <input
+              type="checkbox"
+              [checked]="list.status === 'completed'"
+              (change)="onToggleComplete(list)"
+            />
+            <span class="mx-1">{{ "Completed" }}</span>
           </div>
         </div>
       </div>

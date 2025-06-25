@@ -10,6 +10,7 @@ import { AuthService } from '../services/auth/auth.service';
 import { UserService } from '../services/user/user.service';
 import { Observable, of, Subscription } from 'rxjs';
 import { FormsModule } from '@angular/forms';
+import { NgCircleProgressModule } from 'ng-circle-progress';
 
 @Component({
   selector: 'app-home',
@@ -20,6 +21,7 @@ import { FormsModule } from '@angular/forms';
     CategoriesComponent,
     TodolistsComponent,
     FormsModule,
+    NgCircleProgressModule,
   ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
@@ -27,7 +29,7 @@ import { FormsModule } from '@angular/forms';
 export class HomeComponent implements OnInit {
   currentUser: any;
   username = '';
-  progress: number = 100; // Set progress value here
+  progress: number = 0; // Set progress value here
   isModalOpen: boolean = false;
   editMode: boolean = false;
   tasks!: Subscription;
@@ -62,6 +64,8 @@ export class HomeComponent implements OnInit {
           next: (res) => {
             this.taskList = res;
             this.filteredTaskList = [...res];
+            this.hasCompletedTasks();
+            this.getCompletedPercentage();
           },
           error: (err) => console.error('Error getting real-time tasks:', err),
         });
@@ -96,6 +100,7 @@ export class HomeComponent implements OnInit {
       });
 
     this.selectedPriority = priority;
+    console.log('selectedPriority', this.selectedPriority);
   }
 
   filterTasksCategory(category: string) {
@@ -125,8 +130,53 @@ export class HomeComponent implements OnInit {
     }
   }
 
+  hasCompletedTasks(): boolean {
+    return this.filteredTaskList?.some((task) => task.status === 'completed');
+  }
+
+  onToggleComplete(task: Task) {
+    let newStatus = '';
+
+    if (task) {
+      if (task.status === 'completed') {
+        newStatus = 'pending';
+      } else {
+        newStatus = 'completed';
+      }
+    }
+
+    this.taskService
+      .toggleTaskAsComplete(this.currentUser.uid, task.id, newStatus)
+      .then(() => {
+        this.hasCompletedTasks();
+        this.getCompletedPercentage();
+      })
+      .catch((err) => console.error('Error:', err));
+  }
+
+  getCompletedPercentage(): number {
+    const total = this.taskList.length;
+    if (total === 0) {
+      this.progress = 0;
+    }
+
+    const completed = this.taskList.filter(
+      (task) => task.status === 'completed'
+    ).length;
+    this.progress = Math.round((completed / total) * 100);
+    return this.progress;
+  }
+
   getRotationValue(): number {
     return (this.progress / 100) * 360; // Convert percentage to degree
+  }
+
+  getRightRotation(): number {
+    return (this.progress / 100) * 180; // up to 180°
+  }
+
+  getLeftRotation(): number {
+    return ((this.progress - 50) / 100) * 180; // additional 0°–90°
   }
 
   openModal() {

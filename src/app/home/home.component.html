@@ -26,15 +26,33 @@
             View all tasks
           </button>
         </div>
+        <circle-progress
+          [percent]="progress"
+          [radius]="60"
+          [outerStrokeWidth]="10"
+          [innerStrokeWidth]="3"
+          [outerStrokeColor]="'#fff'"
+          [innerStrokeColor]="'#d7c9f9'"
+          [animation]="true"
+          [animationDuration]="300"
+          [showTitle]="true"
+          [titleColor]="'#fff'"
+          [showUnits]="true"
+          [unitsColor]="'#fff'"
+          [showSubtitle]="true"
+          [subtitleColor]="'#fff'"
+          [showBackground]="false"
+        >
+        </circle-progress>
 
-        <div class="progress-circle">
+        <!-- <div class="progress-circle">
           <div class="circle">
-            <div class="mask full">
+            <div class="mask">
               <div
                 class="fill"
                 [style.transform]="
                   'rotate(' +
-                  (progress > 50 ? 180 : getRotationValue()) +
+                  (progress <= 50 ? getRightRotation() : 180) +
                   'deg)'
                 "
               ></div>
@@ -42,12 +60,14 @@
             <div class="mask half">
               <div
                 class="fill"
-                [style.transform]="'rotate(' + getRotationValue() + 'deg)'"
+                [style.transform]="
+                  'rotate(' + (progress > 50 ? getLeftRotation() : 0) + 'deg)'
+                "
               ></div>
             </div>
             <div class="inside-circle">{{ progress }}%</div>
           </div>
-        </div>
+        </div> -->
       </div>
     </div>
   </section>
@@ -110,8 +130,10 @@
       } @else {
       <app-todolists
         [taskLists]="filteredTaskList"
+        [hasCompletedTask]="hasCompletedTasks()"
         (editTask)="openEditTask($event)"
         (deleteTask)="deleteTask($event)"
+        (toggleComplete)="onToggleComplete($event)"
       ></app-todolists>
       }
     </div>

@@ -5,11 +5,12 @@ import { categories } from '../../models/data';
 import { TaskService } from '../../services/task/tasks.service';
 import { TimestampToDatePipe } from '../../pipes/timestamp-to-date.pipe';
 import { UserService } from '../../services/user/user.service';
+import { SentenceCasePipe } from '../../pipes/sentence/sentence-case.pipe';
 
 @Component({
   selector: 'app-todolists',
   standalone: true,
-  imports: [CommonModule, TimestampToDatePipe],
+  imports: [CommonModule, TimestampToDatePipe, SentenceCasePipe],
   templateUrl: './todolists.component.html',
   styleUrl: './todolists.component.scss',
 })
@@ -19,7 +20,9 @@ export class TodolistsComponent {
   currentUser: any;
 
   @Input() taskLists: Task[] = [];
+  @Input() hasCompletedTask: boolean = false;
   @Output() editTask = new EventEmitter<Task>();
+  @Output() toggleComplete = new EventEmitter<Task>();
   @Output() deleteTask = new EventEmitter<string>();
 
   constructor(
@@ -41,7 +44,9 @@ export class TodolistsComponent {
   }
 
   checkCategory(category: string | undefined): string {
-    const foundCategory = this.categories.find((c) => c.name === category);
+    const foundCategory = this.categories.find(
+      (c) => c.name.toLowerCase() === category?.toLowerCase()
+    );
     return foundCategory ? foundCategory.icon : 'fa-circle'; // Default icon if not found
   }
 
@@ -67,20 +72,6 @@ export class TodolistsComponent {
   }
 
   onToggleComplete(task: Task) {
-    let newStatus = '';
-
-    if (task) {
-      if (task.status === 'completed') {
-        newStatus = 'pending';
-      } else {
-        newStatus = 'completed';
-      }
-      console.log('Status:', task.status);
-    }
-
-    this.taskService
-      .toggleTaskAsComplete(this.currentUser.uid, task.id, newStatus)
-      .then(() => console.log(`Task ${task.title} marked as ${newStatus}`))
-      .catch((err) => console.error('Error:', err));
+    this.toggleComplete.emit(task);
   }
 }

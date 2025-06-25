@@ -146,4 +146,33 @@ export class TaskService {
       completedAt: newStatus === 'completed' ? new Date() : null,
     });
   }
+
+  fetchExpiredTasks(uid: string): Observable<Task[]> {
+    const taskColRef = this.getUserTasksCollection(uid);
+    const now = new Date();
+
+    const expiredQuery = query(
+      taskColRef,
+      where('status', '!=', 'completed'),
+      where('dueDate', '<', now)
+    );
+
+    return new Observable<Task[]>((subscriber) => {
+      const unsubscribe = onSnapshot(
+        expiredQuery,
+        (snapshot) => {
+          const tasks = snapshot.docs.map((doc) => ({
+            ...(doc.data() as Task),
+            id: doc.id,
+          }));
+          subscriber.next(tasks);
+        },
+        (error) => {
+          subscriber.error(error);
+        }
+      );
+
+      return () => unsubscribe();
+    });
+  }
 }
