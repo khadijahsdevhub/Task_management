@@ -22,13 +22,21 @@ export const appConfig: ApplicationConfig = {
     provideAuth(() => getAuth()),
     importProvidersFrom(
       NgCircleProgressModule.forRoot({
-        // Optional: Global default options
-        radius: 100,
-        outerStrokeWidth: 16,
-        innerStrokeWidth: 5,
+        radius: 60,
+        space: -10,
+        outerStrokeGradient: true,
+        outerStrokeWidth: 15,
         outerStrokeColor: '#fff',
+        outerStrokeGradientStopColor: '#bc31df',
         innerStrokeColor: '#d7c9f9',
-        animationDuration: 300,
+        innerStrokeWidth: 10,
+        animateTitle: false,
+        animationDuration: 1000,
+        showUnits: true,
+        showBackground: false,
+        clockwise: false,
+        startFromZero: true,
+        lazy: true,
       })
     ),
   ],

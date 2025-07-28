@@ -5,7 +5,7 @@ export interface Task {
   category?: string;
   priority?: string;
   dueDate?: Date | undefined | null;
-  dueTime?: Date | undefined | null;
+  dueTime?: string | undefined | null;
   status: 'pending' | 'completed' | 'expired';
   viewDetails: boolean;
   createdAt: Date;

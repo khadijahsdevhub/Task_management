@@ -13,44 +13,54 @@
             @if (list.viewDetails) {
             <i
               class="fa-solid fa-chevron-up cursor"
-              (click)="toggleTaskDetails(list.id)"
+              (click)="toggleTaskDetails(list)"
             ></i>
             } @else {
             <i
               class="fa-solid fa-chevron-down cursor"
-              (click)="toggleTaskDetails(list.id)"
+              (click)="toggleTaskDetails(list)"
             ></i>
             }
           </div>
         </div>
 
-        <div class="task-labels pt-3 d-flex gap-3">
+        <div class="task-labels pt-3 d-flex align-items-center gap-4">
           <div class="category-card label-card" [ngClass]="list.category">
             <i class="fa-solid" [ngClass]="checkCategory(list.category)"></i>
             <span class="ml-2"> {{ list.category | sentenceCase }} </span>
           </div>
-          <div class="time-card label-card">
-            <i class="fa-solid fa-calendar"></i>
-            <span class="ml-2">
-              {{ list.dueDate | timestampToDate | date : "fullDate" }}
-            </span>
-          </div>
-          @if (list.dueTime) {
-          <div class="time-card label-card">
-            <i class="fa-solid fa-clock"></i>
-            <span class="ml-2">
-              {{ list.dueTime | timestampToDate | date : "shortTime" }}
-            </span>
-          </div>
-          }
           <div class="d-flex align-items-center">
             <span class="mx-1">
               <i [class]="getPriorityIcon(list.priority)"></i>
             </span>
             <span class="label">{{ list.priority }} </span>
           </div>
+          <div
+            class="time-card label-card"
+            [ngClass]="{ 'text-danger': list.status === 'expired' }"
+          >
+            <i class="fa-solid fa-calendar"></i>
+            <span class="ml-2">
+              {{ list.dueDate | timestampToDate | date : "fullDate" }}
+            </span>
+          </div>
+          @if (list.dueTime) {
+          <div
+            class="time-card label-card"
+            [ngClass]="{ 'text-danger': list.status === 'expired' }"
+          >
+            <i class="fa-solid fa-clock"></i>
+            <span class="ml-2">
+              {{ list.dueTime }}
+            </span>
+          </div>
+          } @if (list.status === 'expired') {
 
-          <div class="d-flex align-items-center">
+          <p class="expired mb-0 text-danger">EXPIRED</p>
+
+          }
+
+          <div class="d-flex align-items-center cursor">
             <input
               type="checkbox"
               [checked]=""
@@ -87,7 +97,7 @@
   <div class="d-flex flex-column gap-3">
     @for (list of taskLists; track list.id) {
     <div
-      class="row task"
+      class="row task completed-task"
       [ngClass]="list.category"
       *ngIf="list.status === 'completed'"
     >
@@ -98,12 +108,12 @@
             @if (list.viewDetails) {
             <i
               class="fa-solid fa-chevron-up cursor"
-              (click)="toggleTaskDetails(list.id)"
+              (click)="toggleTaskDetails(list)"
             ></i>
             } @else {
             <i
               class="fa-solid fa-chevron-down cursor"
-              (click)="toggleTaskDetails(list.id)"
+              (click)="toggleTaskDetails(list)"
             ></i>
             }
           </div>
@@ -150,7 +160,7 @@
       <div class="p-3 mt-2 task-details">
         <p>{{ list.description }}</p>
         <div class="d-flex justify-content-end align-items-center">
-          <div class="mx-3 cursor cntrl-btn" (click)="taskEdit(list)">
+          <div class="mx-3 cursor-not-allowed cntrl-btn">
             <i class="fa-solid fa-pencil"> </i> Edit
           </div>
           <div

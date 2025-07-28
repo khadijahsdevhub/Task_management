@@ -58,6 +58,102 @@ export class TaskService {
     });
   }
 
+  fetchTodayTasks(uid: string): Observable<Task[]> {
+    return new Observable<Task[]>((subscriber) => {
+      const taskColRef = this.getUserTasksCollection(uid);
+
+      // Define today's range
+      const now = new Date();
+      const startOfToday = new Date(
+        now.getFullYear(),
+        now.getMonth(),
+        now.getDate()
+      );
+      const endOfToday = new Date(
+        now.getFullYear(),
+        now.getMonth(),
+        now.getDate() + 1
+      );
+
+      const todayQuery = query(
+        taskColRef,
+        where('dueDate', '>=', startOfToday),
+        where('dueDate', '<', endOfToday),
+        orderBy('dueDate', 'asc')
+      );
+
+      const unsubscribe = onSnapshot(
+        todayQuery,
+        (snapshot) => {
+          const tasks: Task[] = snapshot.docs.map((doc) => ({
+            ...(doc.data() as Task),
+            id: doc.id,
+          }));
+          subscriber.next(tasks);
+        },
+        (error) => {
+          subscriber.error(error);
+        }
+      );
+
+      return () => unsubscribe(); // Cleanup
+    });
+  }
+
+  filterTodaysTasks(
+    uid: string,
+    category: string,
+    priority: string
+  ): Observable<Task[]> {
+    return new Observable<Task[]>((subscriber) => {
+      const taskColRef = this.getUserTasksCollection(uid);
+
+      // Define today's range
+      const now = new Date();
+      const startOfToday = new Date(
+        now.getFullYear(),
+        now.getMonth(),
+        now.getDate()
+      );
+      const endOfToday = new Date(
+        now.getFullYear(),
+        now.getMonth(),
+        now.getDate() + 1
+      );
+      const constraints: QueryConstraint[] = [];
+
+      if (category !== 'All') {
+        constraints.push(where('category', '==', category));
+      }
+
+      if (priority !== 'All') {
+        constraints.push(where('priority', '==', priority));
+      }
+
+      constraints.push(where('dueDate', '>=', startOfToday));
+      constraints.push(where('dueDate', '<', endOfToday));
+      constraints.push(orderBy('dueDate'));
+
+      const filteredQuery = query(taskColRef, ...constraints);
+
+      const unsubscribe = onSnapshot(
+        filteredQuery,
+        (querySnapshot) => {
+          const tasks: Task[] = querySnapshot.docs.map((doc) => ({
+            ...(doc.data() as Task),
+            id: doc.id,
+          }));
+          subscriber.next(tasks);
+        },
+        (error) => {
+          subscriber.error(error);
+        }
+      );
+
+      return () => unsubscribe();
+    });
+  }
+
   filterTasks(
     uid: string,
     category: string,
@@ -116,8 +212,29 @@ export class TaskService {
     taskId: string,
     updates: Partial<Task>
   ): Promise<void> {
-    const taskDoc = doc(this.firestore, `users/${uid}/tasklists/${taskId}`);
-    await updateDoc(taskDoc, updates);
+    const taskDocRef = doc(this.firestore, `users/${uid}/tasklists/${taskId}`);
+
+    // Combine existing task with updates to evaluate the new status
+    const existingSnap = await getDoc(taskDocRef);
+    if (!existingSnap.exists()) return;
+
+    const existingData = existingSnap.data() as Task;
+    const updatedTask: Task = { ...existingData, ...updates };
+
+    // Check if it should no longer be expired
+    const isNowExpired = this.isTaskExpired(updatedTask);
+    const newStatus =
+      updatedTask.status === 'completed'
+        ? 'completed'
+        : isNowExpired
+        ? 'expired'
+        : 'pending';
+
+    await updateDoc(taskDocRef, {
+      ...updates,
+      status: newStatus,
+      completedAt: newStatus === 'completed' ? new Date() : null,
+    });
   }
 
   async deleteTask(uid: string, taskId: string): Promise<void> {
@@ -147,6 +264,25 @@ export class TaskService {
     });
   }
 
+  toggleViewDetails(uid: string, taskId: string, currentViewState: boolean) {
+    const taskDocRef = doc(this.firestore, `users/${uid}/tasklists/${taskId}`);
+    return updateDoc(taskDocRef, {
+      viewDetails: !currentViewState,
+    });
+  }
+
+  updateTaskStatus(
+    uid: string,
+    taskId: string,
+    status: 'completed' | 'pending' | 'expired'
+  ) {
+    const taskDocRef = doc(this.firestore, `users/${uid}/tasklists/${taskId}`);
+    return updateDoc(taskDocRef, {
+      status,
+      completedAt: status === 'completed' ? new Date() : null,
+    });
+  }
+
   fetchExpiredTasks(uid: string): Observable<Task[]> {
     const taskColRef = this.getUserTasksCollection(uid);
     const now = new Date();
@@ -160,19 +296,57 @@ export class TaskService {
     return new Observable<Task[]>((subscriber) => {
       const unsubscribe = onSnapshot(
         expiredQuery,
-        (snapshot) => {
-          const tasks = snapshot.docs.map((doc) => ({
-            ...(doc.data() as Task),
-            id: doc.id,
-          }));
-          subscriber.next(tasks);
+        async (snapshot) => {
+          const tasks: Task[] = [];
+
+          for (const docSnap of snapshot.docs) {
+            const task = { ...(docSnap.data() as Task), id: docSnap.id };
+
+            const isExpired = this.isTaskExpired(task);
+
+            if (isExpired) {
+              if (task.status !== 'expired') {
+                await this.updateTaskStatus(uid, task.id, 'expired');
+                task.status = 'expired'; // update local copy too
+              }
+              tasks.push(task);
+            }
+          }
+
+          subscriber.next(tasks); // ✅ emit result
         },
         (error) => {
           subscriber.error(error);
         }
       );
 
-      return () => unsubscribe();
+      return () => unsubscribe(); // cleanup
     });
+  }
+
+  private isTaskExpired(task: Task): boolean {
+    if (!task.dueDate) return false;
+
+    const now = new Date();
+
+    let due = task.dueDate;
+    if ((due as any)?.toDate) {
+      due = (due as any).toDate(); // Convert Firestore Timestamp
+    } else {
+      due = new Date(due); // Convert string/number to Date
+    }
+
+    // If no time set, expire at start of next day
+    if (!task.dueTime) {
+      due.setHours(23, 59, 59, 999); // End of due date
+    } else {
+      const [hours, minutes] = task.dueTime.split(':').map(Number);
+      due.setHours(hours);
+      due.setMinutes(minutes);
+      due.setSeconds(0);
+      due.setMilliseconds(0);
+    }
+
+    return now > due;
   }
 }
