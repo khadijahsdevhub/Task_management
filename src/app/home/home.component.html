@@ -41,90 +41,79 @@
           [unitsColor]="'#fff'"
           [showSubtitle]="true"
           [subtitleColor]="'#fff'"
-          [showBackground]="false"
+          [showBackground]="true"
         >
         </circle-progress>
-
-        <!-- <div class="progress-circle">
-          <div class="circle">
-            <div class="mask">
-              <div
-                class="fill"
-                [style.transform]="
-                  'rotate(' +
-                  (progress <= 50 ? getRightRotation() : 180) +
-                  'deg)'
-                "
-              ></div>
-            </div>
-            <div class="mask half">
-              <div
-                class="fill"
-                [style.transform]="
-                  'rotate(' + (progress > 50 ? getLeftRotation() : 0) + 'deg)'
-                "
-              ></div>
-            </div>
-            <div class="inside-circle">{{ progress }}%</div>
-          </div>
-        </div> -->
       </div>
     </div>
   </section>
   <section class="container my-4">
-    <div class="d-flex justify-content-between align-items-center">
-      <h4 class="">Today's Tasks</h4>
+    <div class="d-flex row justify-content-between align-items-center">
+      <h4 class="col-12 col-lg-3">Today's Tasks</h4>
+      <div class="col d-flex justify-content-between align-items-center">
+        <div class="searchGroup">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input
+            type="text"
+            [(ngModel)]="searchTerm"
+            placeholder="Search tasks..."
+            (ngModelChange)="searchTasks($event)"
+          />
+        </div>
 
-      <div class="searchGroup">
-        <i class="fa-solid fa-magnifying-glass"></i>
-        <input
-          type="text"
-          [(ngModel)]="searchTerm"
-          placeholder="Search tasks..."
-          (ngModelChange)="searchTasks($event)"
-        />
-      </div>
-
-      <div class="filters">
-        <select
-          id="taskPriority"
-          class="filter cursor mx-3"
-          (ngModelChange)="filterTasksByPriority($event)"
-          [(ngModel)]="selectedPriority"
-          name="priority"
-        >
-          <option value="All" selected>Filter</option>
-          <option
-            class=""
-            *ngFor="let priority of priorities"
-            [value]="priority.name"
+        <div class="filters">
+          <select
+            id="taskPriority"
+            class="filter cursor mx-3"
+            (ngModelChange)="filterTasksByPriority($event)"
+            [(ngModel)]="selectedPriority"
+            name="priority"
           >
-            {{ priority.name }}
-          </option>
-        </select>
-
-        <button class="calendar-btn custom-btn-rev mx-3">
-          <i class="fa-solid fa-calendar mr-2"></i> View calendar
-        </button>
+            <option value="All" selected>Filter</option>
+            <option
+              class=""
+              *ngFor="let priority of priorities"
+              [value]="priority.name"
+            >
+              {{ priority.name }}
+            </option>
+          </select>
+        </div>
       </div>
     </div>
 
     <app-categories
-      (filterTasks)="filterTasksCategory($event)"
+      (filterTasks)="filterTasksByCategory($event)"
       [selectedCategory]="selectedCategory"
     >
     </app-categories>
 
     <div>
-      @if(taskList.length < 1 ) {
+      @if(filteredTaskList.length < 1 ) {
       <div
         class="d-flex justify-content-center align-items-center flex-column gap-3 p-3"
       >
         <img src="/assets/images/no-results.png" />
         @if (selectedCategory == "All") {
         <h2>No Task Found</h2>
+        <div class="d-flex gap-4">
+          <button class="btn-primary" (click)="goToTasks()">
+            View All Task
+          </button>
+          <button class="btn-outline-primary" (click)="openModal()">
+            Add a New Task
+          </button>
+        </div>
         } @else {
         <h2>No {{ selectedCategory }} Task Found</h2>
+        <div class="d-flex gap-4">
+          <button class="btn-primary" (click)="goToTasks()">
+            View All Task
+          </button>
+          <button class="btn-outline-primary" (click)="openModal()">
+            Add a New Task
+          </button>
+        </div>
         }
       </div>
       } @else {
@@ -134,6 +123,7 @@
         (editTask)="openEditTask($event)"
         (deleteTask)="deleteTask($event)"
         (toggleComplete)="onToggleComplete($event)"
+        (toggleViewdetails)="toggleTaskDetails($event)"
       ></app-todolists>
       }
     </div>

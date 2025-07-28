@@ -23,6 +23,7 @@ export class TodolistsComponent {
   @Input() hasCompletedTask: boolean = false;
   @Output() editTask = new EventEmitter<Task>();
   @Output() toggleComplete = new EventEmitter<Task>();
+  @Output() toggleViewdetails = new EventEmitter<Task>();
   @Output() deleteTask = new EventEmitter<string>();
 
   constructor(
@@ -35,12 +36,8 @@ export class TodolistsComponent {
     this.currentUser = this.userService.getUser();
   }
 
-  toggleTaskDetails(taskId: string) {
-    this.taskLists.forEach((t) => {
-      if (t.id == taskId) {
-        t.viewDetails = !t.viewDetails;
-      }
-    });
+  toggleTaskDetails(task: Task) {
+    this.toggleViewdetails.emit(task);
   }
 
   checkCategory(category: string | undefined): string {

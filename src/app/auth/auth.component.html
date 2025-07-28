@@ -1,24 +1,37 @@
 <section class="container-fliud">
-    <h3 class="text-center p-3" >Welcome to Task Management App! 🚀</h3>
-<div class="row my-4 auth-wrapper" [ngClass]="{ 'flex-row-reverse': isRegisterPage, 'flex-row': !isRegisterPage }">
+  <h3 class="text-center p-3">Welcome to Task Management App! 🚀</h3>
+  <div
+    class="row my-4 auth-wrapper"
+    [ngClass]="{
+      'flex-row-reverse': isRegisterPage,
+      'flex-row': !isRegisterPage
+    }"
+  >
     <div class="auth-banner col-12 col-md-6 col-lg-6">
-        @if (isRegisterPage) {
-              <h3 class="text-center text-primary" >Create an account to start managing your tasks efficiently.</h3>
-        } @else {
-              <h3 class="text-center text-primary" >Sign in to access your personalized dashboard.</h3>
-        }
-      
-        @if (isRegisterPage) {
-            <img src="/assets/images/avatar-trans.png" alt="banner-img"/>
+      @if (isRegisterPage) {
+      <h3 class="text-center text-primary">
+        Create an account to start managing your tasks efficiently.
+      </h3>
       } @else {
-        <img src="/assets/images/avatar-4-trans.png" alt="banner-img"/>
+      <h3 class="text-center text-primary">
+        Sign in to access your personalized dashboard.
+      </h3>
+      } @if (isRegisterPage) {
+      <img src="/assets/images/avatar-trans.png" alt="banner-img" />
+      } @else {
+      <img src="/assets/images/avatar-4-trans.png" alt="banner-img" />
       }
-       
-        <div>Stay organized and boost your productivity with our easy-to-use task management system. Sign in to access your personalized dashboard or create a new account to start managing your tasks efficiently. With secure authentication and a user-friendly interface, getting things done has never been easier!</div>
 
+      <div>
+        Stay organized and boost your productivity with our easy-to-use task
+        management system. Sign in to access your personalized dashboard or
+        create a new account to start managing your tasks efficiently. With
+        secure authentication and a user-friendly interface, getting things done
+        has never been easier!
+      </div>
     </div>
-    <div class="col-12 col-md-6 col-lg-6 mx-0">    
-        <router-outlet></router-outlet>
+    <div class="col-12 col-md-6 col-lg-6 mx-0">
+      <router-outlet></router-outlet>
     </div>
-</div>
+  </div>
 </section>

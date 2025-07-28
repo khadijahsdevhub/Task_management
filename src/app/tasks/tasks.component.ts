@@ -32,8 +32,10 @@ export class TasksComponent implements OnInit {
   selectedTask: Task | null = null;
   tasks!: Subscription;
   filteredTasks!: Subscription;
+  expiredTaskSub!: Subscription;
   taskList: Task[] = [];
-  filteredTaskLists: Task[] = [];
+  filteredTaskList: Task[] = [];
+  expiredTasks: Task[] = [];
   selectedPriority: string = 'All';
   priorities = [{ name: 'Normal' }, { name: 'High' }, { name: 'Low' }];
 
@@ -53,7 +55,12 @@ export class TasksComponent implements OnInit {
       this.tasks = this.taskService
         .fetchAllTask(this.currentUser.uid)
         .subscribe({
-          next: (tasks) => (this.taskList = tasks),
+          next: (res) => {
+            this.taskList = res;
+            this.filteredTaskList = [...res];
+            this.hasCompletedTasks();
+            this.getExpiredTasks();
+          },
           error: (err) => console.error('Error getting real-time tasks:', err),
         });
 
@@ -69,14 +76,33 @@ export class TasksComponent implements OnInit {
     if (this.filteredTasks) {
       this.filteredTasks.unsubscribe();
     }
+    if (this.expiredTaskSub) {
+      this.expiredTaskSub.unsubscribe();
+    }
+  }
+
+  filterTasksByPriority(priority: string) {
+    this.filteredTasks = this.taskService
+      .filterTasks(this.currentUser.uid, this.selectedCategory, priority)
+      .subscribe({
+        next: (res) => {
+          this.taskList = res;
+          this.filteredTaskList = [...res];
+        },
+        error: (err) => console.error('Error getting category tasks:', err),
+      });
+
+    this.selectedPriority = priority;
+    console.log('selectedPriority', this.selectedPriority);
   }
 
   filterTasksByCategory(category: string) {
     this.filteredTasks = this.taskService
       .filterTasks(this.currentUser.uid, category, this.selectedPriority)
       .subscribe({
-        next: (filteredTasks) => {
-          this.taskList = filteredTasks;
+        next: (res) => {
+          this.taskList = res;
+          this.filteredTaskList = [...res];
         },
         error: (err) => console.error('Error getting category tasks:', err),
       });
@@ -84,17 +110,60 @@ export class TasksComponent implements OnInit {
     this.selectedCategory = category;
   }
 
-  filterTasksByPriority(priority: string) {
-    this.filteredTasks = this.taskService
-      .filterTasks(this.currentUser.uid, this.selectedCategory, priority)
-      .subscribe({
-        next: (filteredTasks) => {
-          this.taskList = filteredTasks;
-        },
-        error: (err) => console.error('Error getting category tasks:', err),
-      });
+  searchTasks(searchterm: string) {
+    if (searchterm.trim().length > 0) {
+      const lowerTerm = searchterm.toLowerCase();
+      this.filteredTaskList = this.taskList.filter(
+        (task) =>
+          task.title.toLowerCase().includes(lowerTerm) ||
+          task.description?.toLowerCase().includes(lowerTerm)
+      );
+    } else {
+      this.filteredTaskList = [...this.taskList];
+    }
+  }
 
-    this.selectedPriority = priority;
+  hasCompletedTasks(): boolean {
+    return this.filteredTaskList?.some((task) => task.status === 'completed');
+  }
+
+  onToggleComplete(task: Task) {
+    let newStatus = '';
+
+    if (task) {
+      if (task.status === 'completed') {
+        newStatus = 'pending';
+      } else {
+        newStatus = 'completed';
+      }
+    }
+
+    this.taskService
+      .toggleTaskAsComplete(this.currentUser.uid, task.id, newStatus)
+      .then(() => {
+        this.hasCompletedTasks();
+      })
+      .catch((err) => console.error('Error:', err));
+  }
+
+  getExpiredTasks() {
+    this.expiredTaskSub = this.taskService
+      .fetchExpiredTasks(this.currentUser.uid)
+      .subscribe({
+        next: (tasks) => {
+          this.expiredTasks = tasks;
+          console.log('Expired tasks:', this.expiredTasks);
+        },
+        error: (err) => console.error('Error fetching expired tasks:', err),
+      });
+  }
+
+  toggleTaskDetails(task: Task) {
+    this.taskService.toggleViewDetails(
+      this.currentUser.uid,
+      task.id,
+      task.viewDetails
+    );
   }
 
   openModal() {

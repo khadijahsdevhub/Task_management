@@ -31,23 +31,37 @@
       <i class="fa-solid fa-calendar mr-2"></i> View calendar
     </button>
   </div>
+
   <div>
-    @if(taskList.length < 1) {
+    @if(taskList.length < 1 ) {
     <div
       class="d-flex justify-content-center align-items-center flex-column gap-3 p-3"
     >
       <img src="/assets/images/no-results.png" />
       @if (selectedCategory == "All") {
       <h2>No Task Found</h2>
+      <div class="d-flex gap-4">
+        <button class="btn-primary" (click)="openModal()">
+          Add a New Task
+        </button>
+      </div>
       } @else {
       <h2>No {{ selectedCategory }} Task Found</h2>
+      <div class="d-flex gap-4">
+        <button class="btn-primary" (click)="openModal()">
+          Add a New Task
+        </button>
+      </div>
       }
     </div>
-    } @else{
+    } @else {
     <app-todolists
-      [taskLists]="taskList"
+      [taskLists]="filteredTaskList"
+      [hasCompletedTask]="hasCompletedTasks()"
       (editTask)="openEditTask($event)"
       (deleteTask)="deleteTask($event)"
+      (toggleComplete)="onToggleComplete($event)"
+      (toggleViewdetails)="toggleTaskDetails($event)"
     ></app-todolists>
     }
   </div>

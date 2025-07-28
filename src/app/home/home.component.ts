@@ -34,9 +34,10 @@ export class HomeComponent implements OnInit {
   editMode: boolean = false;
   tasks!: Subscription;
   filteredTasks!: Subscription;
-  taskList: Task[] = [];
-  filteredTaskList: Task[] = [];
+  expiredTaskSub!: Subscription;
   todayTaskList: Task[] = [];
+  filteredTaskList: Task[] = [];
+  expiredTasks: Task[] = [];
   completedList: Task[] = [];
   selectedTask: Task | null = null;
   selectedCategory: string = 'All';
@@ -59,19 +60,21 @@ export class HomeComponent implements OnInit {
       this.username = this.currentUser.name;
 
       this.tasks = this.taskService
-        .fetchAllTask(this.currentUser.uid)
+        .fetchTodayTasks(this.currentUser.uid)
         .subscribe({
           next: (res) => {
-            this.taskList = res;
-            this.filteredTaskList = [...res];
+            this.todayTaskList = res;
+            this.filteredTaskList = [...this.todayTaskList];
             this.hasCompletedTasks();
             this.getCompletedPercentage();
+            this.getExpiredTasks();
           },
           error: (err) => console.error('Error getting real-time tasks:', err),
         });
 
       console.log('Welcome,', this.currentUser.name);
       console.log(this.currentUser);
+      console.log(this.todayTaskList);
     }
   }
 
@@ -82,6 +85,9 @@ export class HomeComponent implements OnInit {
     if (this.filteredTasks) {
       this.filteredTasks.unsubscribe();
     }
+    if (this.expiredTaskSub) {
+      this.expiredTaskSub.unsubscribe();
+    }
   }
 
   goToTasks() {
@@ -90,10 +96,10 @@ export class HomeComponent implements OnInit {
 
   filterTasksByPriority(priority: string) {
     this.filteredTasks = this.taskService
-      .filterTasks(this.currentUser.uid, this.selectedCategory, priority)
+      .filterTodaysTasks(this.currentUser.uid, this.selectedCategory, priority)
       .subscribe({
         next: (res) => {
-          this.taskList = res;
+          this.todayTaskList = res;
           this.filteredTaskList = [...res];
         },
         error: (err) => console.error('Error getting category tasks:', err),
@@ -103,13 +109,14 @@ export class HomeComponent implements OnInit {
     console.log('selectedPriority', this.selectedPriority);
   }
 
-  filterTasksCategory(category: string) {
+  filterTasksByCategory(category: string) {
     this.filteredTasks = this.taskService
-      .filterTasks(this.currentUser.uid, category, this.selectedPriority)
+      .filterTodaysTasks(this.currentUser.uid, category, this.selectedPriority)
       .subscribe({
         next: (res) => {
-          this.taskList = res;
+          this.todayTaskList = res;
           this.filteredTaskList = [...res];
+          console.log(this.todayTaskList);
         },
         error: (err) => console.error('Error getting category tasks:', err),
       });
@@ -120,13 +127,13 @@ export class HomeComponent implements OnInit {
   searchTasks(searchterm: string) {
     if (searchterm.trim().length > 0) {
       const lowerTerm = searchterm.toLowerCase();
-      this.filteredTaskList = this.taskList.filter(
+      this.filteredTaskList = this.todayTaskList.filter(
         (task) =>
           task.title.toLowerCase().includes(lowerTerm) ||
           task.description?.toLowerCase().includes(lowerTerm)
       );
     } else {
-      this.filteredTaskList = [...this.taskList];
+      this.filteredTaskList = [...this.todayTaskList];
     }
   }
 
@@ -154,29 +161,36 @@ export class HomeComponent implements OnInit {
       .catch((err) => console.error('Error:', err));
   }
 
+  getExpiredTasks() {
+    this.expiredTaskSub = this.taskService
+      .fetchExpiredTasks(this.currentUser.uid)
+      .subscribe({
+        next: (tasks) => {
+          this.expiredTasks = tasks;
+        },
+        error: (err) => console.error('Error fetching expired tasks:', err),
+      });
+  }
+
   getCompletedPercentage(): number {
-    const total = this.taskList.length;
+    const total = this.todayTaskList.length;
     if (total === 0) {
       this.progress = 0;
     }
 
-    const completed = this.taskList.filter(
+    const completed = this.todayTaskList.filter(
       (task) => task.status === 'completed'
     ).length;
     this.progress = Math.round((completed / total) * 100);
     return this.progress;
   }
 
-  getRotationValue(): number {
-    return (this.progress / 100) * 360; // Convert percentage to degree
-  }
-
-  getRightRotation(): number {
-    return (this.progress / 100) * 180; // up to 180°
-  }
-
-  getLeftRotation(): number {
-    return ((this.progress - 50) / 100) * 180; // additional 0°–90°
+  toggleTaskDetails(task: Task) {
+    this.taskService.toggleViewDetails(
+      this.currentUser.uid,
+      task.id,
+      task.viewDetails
+    );
   }
 
   openModal() {
